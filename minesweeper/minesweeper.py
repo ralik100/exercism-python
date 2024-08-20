@@ -12,12 +12,13 @@ def get_neighbors_higher(matrix, row, col):
     return matrix
 
 def annotate(minefield):
-    temp=[]
+    temp_list=[]
     res=[]
+    temp_str=""
     for row in minefield:
-        temp.append(list(row))
+        temp_list.append(list(row))
 
-    temp_matrix=np.array(temp)
+    temp_matrix=np.array(temp_list)
 
     matrix_shape=temp_matrix.shape
     integer_matrix=np.zeros(matrix_shape)
@@ -27,6 +28,16 @@ def annotate(minefield):
             if temp_matrix[i][y]=="*":
                 get_neighbors_higher(integer_matrix,i,y)
 
-    return integer_matrix
+    for i in range(matrix_shape[0]):
+        for y in range(matrix_shape[1]):
+            if temp_list[i][y]==" " and integer_matrix[i][y]>0:
+                temp_list[i][y]=str(int(integer_matrix[i][y]))
+
+            temp_str+=temp_list[i][y]
+
+        res.append(temp_str)
+        temp_str=""
+    
+    return res
 
 print(annotate(["   ","** "]))
