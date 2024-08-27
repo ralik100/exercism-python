@@ -7,20 +7,22 @@ def encode(numbers):
     """
 
     res=[]
-
-    #print(str([0x7F]))
-
-    #in_binary=bin(int(str(numbers[0]), 16))[2:].zfill(len(numbers) * 4)
-    print(numbers[0])
-    while numbers[0]>0:
-        byte = numbers[0] & 0x7F
-        numbers[0] >>= 7
-        if numbers[0]>0:
-            byte |= 0x80
-        res.insert(0, byte)
-        print(byte)  
-
+    for number in numbers:
+        hexa=number
+        if hexa==0:
+            res.append(0)
+            continue
+        temp=[]
+        while hexa>0:
+            byte = hexa & 0x7F
+            hexa >>= 7
+            if len(temp)>0:
+                byte |= 0x80
+            temp.insert(0, byte)
+             
+        res+=temp
     return res
+
 
 def decode(bytes_):
     """
@@ -28,8 +30,14 @@ def decode(bytes_):
     return : char - output in hexadecimal
     """
     res=[]
+    number=0
+
+    for i in range(len(bytes_)):
+        if bytes_[i] & 0x7F == 0 and i == 0 or bytes_[i]== 0xFF and i ==len(bytes_)-1:
+            raise ValueError("incomplete sequence")
+        number= (number << 7) | (bytes_[i] & 0x7F)
+        if bytes_[i] & 0x80 == 0:
+            res.append(number)
+            number=0
 
     return res
-
-
-print(encode([0x7F]))
