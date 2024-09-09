@@ -11,26 +11,32 @@ def find_fewest_coins(coins, target):
 
     coin_list=[]
     for coin in coins:
-            if coin <= target:
-                coin_list.insert(0,coin)
+            if coin==target:
+                res.append(coin)
+                return res
+            if coin < target:
+                coin_list.append(coin)
 
-    if len(coin_list)==1:
-          res.append(coin_list[0])
-          return res
+    print(coin_list)
     
     temp=target
-    while temp!=0:
-          if temp%coin_list[-1]==0:
-                for i in range(temp//coin_list[-1]):
-                      res.append(coin_list[-1])
+    while True:
+        print(coin_list)
+        print(temp)
+        for coin in coin_list:           
+            if temp%coin==0 and coin!=1:
+                print("asd")
+                for i in range(temp//coin):
+                    res.append(coin)
+                    temp=temp-coin
                 break
-          if temp%coin_list[-1]!=0:
-                temp=temp-coin_list[-1]
-                res.append(coin_list[-1]) 
-                coin_list.pop(-1)
-                
-
+        if temp==0:
+             break
+        temp=temp-coin_list[-1]
+        res.append(coin_list[-1])
+        if coin_list[-1]>temp:
+             coin_list.pop(-1)
     
     return res
 
-print(find_fewest_coins([1, 5, 10, 25], 1))
+print(find_fewest_coins([1, 5, 10, 25, 100], 15))
