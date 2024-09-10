@@ -1,42 +1,27 @@
 def find_fewest_coins(coins, target):
-    """
-    params:
-    coins - list : value of possible change coins
-    target - int : value of change
-
-    result - list : minimum possible list containing coins needed to give change
-    """
-    res=[]
-
-
-    coin_list=[]
+    
+    if target<0:
+        raise ValueError("target can't be negative")
+    dp = [float('inf')] * (target + 1)
+    dp[0] = 0  
+    
+    
     for coin in coins:
-            if coin==target:
-                res.append(coin)
-                return res
-            if coin < target:
-                coin_list.append(coin)
-
-    print(coin_list)
+        for i in range(coin, target + 1):
+            dp[i] = min(dp[i], dp[i - coin] + 1)
     
-    temp=target
-    while True:
-        print(coin_list)
-        print(temp)
-        for coin in coin_list:           
-            if temp%coin==0 and coin!=1:
-                print("asd")
-                for i in range(temp//coin):
-                    res.append(coin)
-                    temp=temp-coin
+    if dp[target]==float('inf'):
+        raise ValueError("can't make target with given coins")
+    
+    
+    result = []
+    while target > 0:
+        for coin in coins:
+            if target >= coin and dp[target] == dp[target - coin] + 1:
+                result.append(coin)
+                target -= coin
                 break
-        if temp==0:
-             break
-        temp=temp-coin_list[-1]
-        res.append(coin_list[-1])
-        if coin_list[-1]>temp:
-             coin_list.pop(-1)
-    
-    return res
 
-print(find_fewest_coins([1, 5, 10, 25, 100], 15))
+    return result
+
+print(find_fewest_coins([1, 4, 15, 20, 50], 23))
