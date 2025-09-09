@@ -10,22 +10,29 @@ def link(dominoes):
 
     return linked
     
+def reverse_stone(stone,links):
+    new_stone=(stone[1],stone[0])
+    for key in links:
+        if stone in links[key]:
+            links[key].remove(stone)
+            links[key].append(new_stone)
+    return new_stone
 
 def can_chain(dominoes):
-    links=link(dominoes)
+    
     result=[]
     length=len(dominoes)
-    revd=[]
+
 
     if length==0:
-        return None
+        return []
     if length==1:
         stone=dominoes[0]
         if stone[0]==stone[1]:
             return stone
         else:
             return None
-    
+    links=link(dominoes)
     result.append(dominoes.pop(0))
     
     
@@ -33,38 +40,30 @@ def can_chain(dominoes):
 
         stone=result[-1]
         x=dominoes.pop(0)
-        if x in links[stone] or x == revd[-1] and tuple(x[1],x[0]) in links[stone]:
-            if x[0]==stone[1] :
+        if x in links[stone]:
+            if x[0]==stone[1]:
                 result.append(x)
             else:
                 dominoes.append(x)
         else:
             dominoes.append(x)
 
-            
-        
-        if x in links[stone] and len(dominoes)==1:
-            x=dominoes.pop(0)
-            revd.append(x)
-            new_x=(x[1],x[0])
-            x=new_x
-            dominoes.insert(0,x)
-            links[stone].append(x)
+        if x in links[stone] and x[0]!=stone[1]:
+            x=reverse_stone(x,links)   
+            dominoes.pop()
+            dominoes.append(x)
 
-
-        
+             
         if x not in links[stone]:
-
             return None   
 
          
 
     if result[0][0]==result[-1][1]:
-        print("asd")
         return result
     else:
         return None
 
 
-input_dominoes = [(1, 2), (1, 3), (2, 3)]
+input_dominoes = [(1, 2), (3, 1), (2, 3)]
 print(can_chain(input_dominoes))
