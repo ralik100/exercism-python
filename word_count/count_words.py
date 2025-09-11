@@ -4,18 +4,22 @@ def count_words(sentence):
     string=""
     counter=0
     for letter in sentence:
-        if letter.isalpha() or letter.isdigit() or letter=="'":
-            if  (sentence[sentence.index(letter)-1]).isalpha() or letter.isalpha() or letter=="'":
+        if letter.isalpha() or letter.isdigit() or letter=="'" or letter.isnumeric():
+            if  (sentence[sentence.index(letter)-1]).isalpha() or letter.isalpha() or letter=="'" or letter.isnumeric():
 
                 try:
-                    if letter=="'" and string[-1].islower() and sentence[counter+1].islower():
-                        print(letter)
-                        print(sentence[counter+1])
+                    if letter=="'":
+                        if sentence[counter-1].isalpha() and sentence[counter+1].isalpha():
+                            string+=letter
+                        else:
+                            ls.append(string.lower())
+                            string=""
+                            counter+=1
+                            continue
+                    else:
                         string+=letter
-                        continue
                 except IndexError:
                     continue
-                string+=letter
         else:
             ls.append(string.lower())
             string=""
@@ -31,4 +35,5 @@ def count_words(sentence):
 
 
 
-print(count_words("Joe can't tell between 'large' and large."))
+print(count_words("testing, 1, 2 testing"))
+#passed all 17 tests
