@@ -1,15 +1,28 @@
-def math_d(strong, numb_one, numb_two):
+def math_d(strong,stack):
     match strong:
         case "+":
-            return numb_two+numb_one
+            one=stack.pop(-1)
+            two=stack.pop(-1)
+            return two+one
         case "-":
-            return numb_two-numb_one
+            one=stack.pop(-1)
+            two=stack.pop(-1)
+            return two-one
         case "*":
-            return numb_two*numb_one
+            one=stack.pop(-1)
+            two=stack.pop(-1)
+            return two*one
         case "/":
-            return numb_two//numb_one
+            one=stack.pop(-1)
+            two=stack.pop(-1)
+            return two//one
         case "dup":
-            pass
+            one=stack[-1]
+            return one
+        case "drop":
+            x=stack.pop()
+
+            
 
 
 class StackUnderflowError(Exception):
@@ -38,9 +51,10 @@ def evaluate(input_data):
         item=stack.pop(0)
         if type(item)==str:
             try:
-                number_one=stack.pop(-1)
-                number_two=stack.pop(-1)
-                stack.append(math_d(item,number_one,number_two))
+                item=item.lower()
+                result=math_d(item,stack)
+                if result!=None:
+                    stack.append(result)
             except IndexError:
                 raise StackUnderflowError("Insufficient number of items in stack")
             except ZeroDivisionError:
@@ -52,4 +66,4 @@ def evaluate(input_data):
 
 
 
-print(evaluate(["4 0 /"]))
+print(evaluate(["1 drop"]))
