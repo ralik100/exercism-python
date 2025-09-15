@@ -1,37 +1,109 @@
 def math_d(strong,stack, user_command):
     match strong:
         case "+":
-            one=stack.pop()
-            two=stack.pop()
-            return two+one
+            if strong not in user_command:
+                one=stack.pop()
+                two=stack.pop()
+                return two+one
+            else:
+                for item in user_command[strong]:
+                    try:
+                        stack.append(int(item))
+                    except:
+                        stack.append(item)
+        
         case "-":
-            one=stack.pop()
-            two=stack.pop()
-            return two-one
+            if strong not in user_command:
+                one=stack.pop()
+                two=stack.pop()
+                return two-one
+            else:
+                for item in user_command[strong]:
+                    try:
+                        stack.append(int(item))
+                    except:
+                        stack.append(item)
+        
         case "*":
-            one=stack.pop()
-            two=stack.pop()
-            return two*one
+            if strong not in user_command:
+                one=stack.pop()
+                two=stack.pop()
+                return two*one
+            else:
+                for item in user_command[strong]:
+                    try:
+                        stack.append(int(item))
+                    except:
+                        stack.append(item)
+        
         case "/":
-            one=stack.pop()
-            two=stack.pop()
-            return two//one
+            if strong not in user_command:
+                one=stack.pop()
+                two=stack.pop()
+                return two//one
+            else:
+                for item in user_command[strong]:
+                    try:
+                        stack.append(int(item))
+                    except:
+                        stack.append(item)
+        
         case "dup":
-            one=stack[-1]
-            return one
+            if strong not in user_command:
+                one=stack[-1]
+                return one
+            else:
+                for item in user_command[strong]:
+                    try:
+                        stack.append(int(item))
+                    except:
+                        stack.append(item)
+
         case "drop":
-            x=stack.pop()
+            if strong not in user_command:
+                x=stack.pop()
+            else:
+                for item in user_command[strong]:
+                    try:
+                        stack.append(int(item))
+                    except:
+                        stack.append(item)
+
         case "swap":
-            one=stack.pop()
-            two=stack.pop()
-            return one, two
+            if strong not in user_command:
+                one=stack.pop()
+                two=stack.pop()
+                return one, two
+            else:
+                for item in user_command[strong]:
+                    try:
+                        stack.append(int(item))
+                    except:
+                        stack.append(item)
+
         case "over":
-            item=stack[-2]
-            return item
+            if strong not in user_command:
+                item=stack[-2]
+                return item
+            else:
+                for item in user_command[strong]:
+                    try:
+                        stack.append(int(item))
+                    except:
+                        stack.append(item)
+
         case _:
+            if strong.isdigit():
+                raise ValueError("undefined operation")
             if strong in user_command:
-                stack.extend(user_command[strong])
+                for item in user_command[strong]:
+                    try:
+                        stack.append(int(item))
+                    except:
+                        stack.append(item)
                 return None
+            elif strong not in user_command:
+                raise ValueError("undefined operation")
 
 
             
@@ -49,18 +121,39 @@ class MyZeroDivisionError(Exception):
 
 
 def evaluate(input_data):
+
+    if len(input_data)==1 and input_data[0][0]==":":
+        raise ValueError("illegal operation")
+
     user_command={}
-    if len(input_data)==2:
-        user_stack=input_data.pop(0)
-        user_stack=user_stack.split(" ")
-        user_stack.pop(0)
-        user_stack.pop()
-        user_command={
-            user_stack.pop(0):user_stack
-        }
+    if len(input_data)!=1:
+        while len(input_data)>1:
+            user_stack=input_data.pop(0)
+            user_stack=user_stack.split(" ")
+            user_stack.pop(0)
+            user_stack.pop()
+            command=user_stack.pop(0)
+            command=command.lower()
+            if command not in user_command:
+                user_command[command]=[]
+            elif command in user_command:
+                copy=user_command[command]
+                user_command[command]=[]
+            for item in user_stack:
+                item=item.lower()
+                try:
+                    item=int(item)
+                except:
+                    pass
+                
+                if item not in user_command:
+                    user_command[command].append(item)
+                elif item == command:
+                    user_command[command].extend(copy)
+                else:
+                    user_command[command].extend(user_command[item])
 
     stack=input_data[0].split(" ")
-
     for i in range(len(stack)):
         try:
             x=int(stack[i])
@@ -99,4 +192,4 @@ def evaluate(input_data):
 
 
 
-print(evaluate([": dup-twice dup dup ;", "1 dup-twice"]))
+print(evaluate([": SWAP DUP Dup dup ;", "1 swap"]))
