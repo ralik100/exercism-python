@@ -1,69 +1,39 @@
-def link(dominoes):
-    linked={}
-
-    for stone in dominoes:
-        matches=[]
-        for i in range (0,len(dominoes)):
-            if stone[0] in dominoes[i] or stone[1] in dominoes[i]:
-                matches.append(dominoes[i])
-        linked[stone]=matches
-
-    return linked
-    
-def reverse_stone(stone,links):
-    new_stone=(stone[1],stone[0])
-    for key in links:
-        if stone in links[key]:
-            links[key].remove(stone)
-            links[key].append(new_stone)
-    return new_stone
-
 def can_chain(dominoes):
-    
-    result=[]
-    length=len(dominoes)
-
-
-    if length==0:
+    n = len(dominoes)
+    if n == 0:
         return []
-    if length==1:
-        stone=dominoes[0]
-        if stone[0]==stone[1]:
-            return stone
-        else:
+
+    def backtrack(chain, remaining):
+        if not remaining:
+            if chain[0][0] == chain[-1][1]:
+                return chain
             return None
-    links=link(dominoes)
-    result.append(dominoes.pop(0))
-    
-    
-    while dominoes:
 
-        stone=result[-1]
-        x=dominoes.pop(0)
-        if x in links[stone]:
-            if x[0]==stone[1]:
-                result.append(x)
-            else:
-                dominoes.append(x)
-        else:
-            dominoes.append(x)
+        last = chain[-1][1]  
+        for i, stone in enumerate(remaining):
+            a, b = stone
 
-        if x in links[stone] and x[0]!=stone[1]:
-            x=reverse_stone(x,links)   
-            dominoes.pop()
-            dominoes.append(x)
+            if a == last:
+                new_chain = chain + [stone]
+                result = backtrack(new_chain, remaining[:i] + remaining[i+1:])
+                if result:
+                    return result
 
-             
-        if x not in links[stone]:
-            return None   
+            if b == last:
+                new_chain = chain + [(b, a)]
+                result = backtrack(new_chain, remaining[:i] + remaining[i+1:])
+                if result:
+                    return result
 
-         
-
-    if result[0][0]==result[-1][1]:
-        return result
-    else:
         return None
 
+    for i, stone in enumerate(dominoes):
+        result = backtrack([stone], dominoes[:i] + dominoes[i+1:])
+        if result:
+            return result
 
-input_dominoes = [(1, 2), (3, 1), (2, 3)]
+    return None
+
+
+input_dominoes = [(1, 2), (2, 3), (3, 1), (2, 4), (2, 4)]
 print(can_chain(input_dominoes))
